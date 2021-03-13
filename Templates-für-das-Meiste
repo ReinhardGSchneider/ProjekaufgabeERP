@@ -1,0 +1,440 @@
+CLASS zcl_119038_exercise_9999_9 DEFINITION
+  PUBLIC
+  FINAL
+  CREATE PUBLIC .
+
+  PUBLIC SECTION.
+
+    INTERFACES if_oo_adt_classrun .
+  PROTECTED SECTION.
+  PRIVATE SECTION.
+ENDCLASS.
+
+
+
+CLASS zcl_119038_exercise_9999_9 IMPLEMENTATION.
+
+
+  METHOD if_oo_adt_classrun~main.
+
+
+  "Attributdeklaration - Lokale Datentypen
+  
+    "ganzzahliger Wert - integerValue
+    DATA intval1 TYPE i VALUE '123'.
+    "Gepackte (Dezimal-)Zahl
+    DATA decVal1 TYPE p LENGTH 16 DECIMALS 2 VALUE '3.14'.
+    "DATUMSWERT
+    DATA dateVal1 TYPE d VALUE 'YYYYMMDD'.
+    "ZeitWert
+    DATA timeVal1 TYPE t VALUE 'HHMMSS'
+    "Zeichenkette mit dynamischer Länge
+    DATA strVal1 TYPE string VALUE 'text'.
+    "Zeichenketten mit fester Länge
+    DATA charVal1 TYPE c LENGTH 4 VALUE 'HIJK'.
+    "Numerische Folge fester Länge
+    DATA numval1 TYPE N LENGTH 4 VALUE '0001'.
+
+
+  "Attributdeklaration - Globale Datentypen
+    DATA connection_id TYPE /dmo/connection_id.
+    DATA carrier_id TYPE /dmo/carrier_id VALUE 'LH'.
+    DATA flight_date TYPE /dmo/flight_date VALUE '20210104'.
+
+
+
+  "Wertzuweisung
+
+    "VALUE - Schlüsselwort
+    DATA connection_id TYPE /dmo/connection_id VALUE '0400'.
+    "Zuweisungsoperator "="
+    connection_id = '0401'.
+    "Inlinedeklaration - Typkonvertierung
+    DATA(flight_date) = '20200101'.
+    "CLEAR - Schlüsselwort/ Setzt Wert auf Initialwert zurück
+    CLEAR connection_id.
+
+  "Fixe Datenobjekte
+    "CONSTANTS - Schlüsselwort
+    CONSTANTS pi TYPE p LENGTH 2 DECIMALS 2 VALUE '3.14'.
+
+
+  "Mathematische Operationen
+    "Addition
+    result = 5 + 3.
+    "Subtraktion
+    result = 5 - 3.
+    "Multiplikation
+    result = 5 * 3.
+    "Division
+    result = 5 / 3.
+    "Potenz
+    result = 5 ** 3.
+    "Ganzzahlige Division
+    result = 5 DIV 3.
+    "Divisionsrest - Modulo
+    result = 5 MOD 3.
+    "Zuweisungsoperator
+    result = 5 += 3.
+    result = 5 -= 3.
+    result = 5 *= 3.
+    result = 5 /= 3.
+
+
+  "Numerische Funktionen
+    "Betrag
+    result = abs( -1 ).
+    "Potenz
+    result = ipow( base = 4 exp 2 ).
+    "Maximalwert
+    result = nmax( val1 = 3 val2 = 5 ).
+    "Kosinus-Wert
+    result = cos( '6.2' ).
+    "Runden
+    result = round( val = '3.1231' dec = 1 ). "dec = Anzahl der Nachkommastellen
+    
+  
+  "Vergleichsoperatoren und logische Operatoren
+    "logische Verknüpfungen
+    IF NOT (Bedingung) OR (Bedingung) AND NOT INITIAL (Variable).
+      Anweisung
+    ENDIF.
+
+  "Einfachverzweigungen
+    IF NOT (flight_date >= '20210101' AND flight_date <= '20211231' )
+      OR carrier_id = 'LH'.
+        out->write( 'X' ).
+      ELSE 
+        out->write( 'Y' ).
+    ENDIF.
+
+  "Mehrfachverzweigungen
+    CASE carrier_id.
+      WHEN 'LH'.
+        out->write( 'Lufthansa' ).
+      WHEN 'FF'
+        out->write( 'Frankfurt' ).
+      WHEN OTHERS.
+    ENDCASE.
+
+  "Zeichenkettentemplate
+    "Verknüpfung mehrerer Zeichenketten  
+      text3 = text1 && || && text2 && ||.
+      text &&= text2.
+    
+    "Verwendung eines Zeichenketten-Templates
+      text3 = | {text1} {text2} |.
+
+  "Zeichenkettenfunktionen
+    "Zeichenkettenlänge
+    result = strlen( text ).
+    "Suchen eines Substrings innerhalb einer Zeichenkette
+    result = find( val = text sub = 'H' ).
+    "Ersetzen von Zeichen innerhalb einer Zeichenkette
+    result = replace( val = text sub = 'L' with = 'Q' occ = 0 ).
+    "Zeichenkette in Groß-/Kleinbuchstaben übersetzen
+    result = to_upper( text ).
+
+
+"Komplexe Datenobjekte - DDL - ABAP Core Data Services (ABAP CDS)
+  "definition globaler Strukturtypen
+    define structure Z119038_Connection {
+      carrier_id      : /dmo/carrier_id;
+      connection_id   : /dmo/connection_id;
+      airport_from_id : /dmo/airport_from_id;
+      airport_to_id   : /dmo/airport_to_id;
+    }
+
+  "deklaration von Strukturen
+  DATA connection TYPE Z119038_Connection.
+
+  "Zugriff auf Strukturkomponenten
+  DATA connection TYPE Z119038_Connection.
+  DATA connectio2 TYPE Z119038_Connection.
+
+  connection-carrier_id = 'LH'.
+  connection-connection_id = '0400'.
+
+  out->write( connection-carrier_id ).
+  out->write( connection-connection_id ).
+
+  "Kopieren von Strukturkomponenten
+    DATA flight TYPE Z119038_Flight.
+    DATA connection TYPE Z119038_Connection.
+    DATA flight_xt TYPE Z119038_Flight_XT.
+    "Kopieren typgleicher Strukturen
+    connection2 = connection.
+
+    "Kopieren namensgleicher Kompnenten - 
+    "Komponentweise Kopieren von Inhalten einer Quellstruktur in eine Zielstruktur
+    flight_xt = CORRESPONDING #( flight ).
+    flight_xt = CORRESPONDING #( BASE ( flight_xt ) connection ).
+
+
+  "Deklaration interner Tabellen
+    "direkt im Programm - selbstständige Definition
+    DATA flights TYPE TABLE OF Z119038_Flight.
+    "Angabe eines globalen Tabellentyps
+    DATA flights2 TYPE Z119038_Flight.
+
+  "Einfügen von Datensätzen
+    "Einfügen von Datensätzen
+    flights = VALUE #(
+      ( carrier_id = 'LH' connection_id = '0400' flight_date = today )
+      ( carrier_id = 'LH' connection_id = '0401' flight_date = today )
+    ).
+
+    "Erweitern interner Tabellen
+    flight-carrier_id = 'LH'.
+    flight-connection_id = '0402'.
+    flight-flight_date = today.
+
+    "VALUE ermöglicht das Einfügen von Datensätzen in interne Tabellen
+    "BASE ermöglicht das Erweitern einer internen Tabelle
+    flights = VALUE #( BASE flights ( flight ) ).
+
+  "Lesen von Datensätzen
+    DATA flight TYPE Z119038_Flight.
+    DATA flights TYPE Z119038_Flights.
+    DATA(today) = CL_119038_CONTEXT_INFO=>get_system_date().
+    DATA number_of_flights TYPE 1.
+
+    "Lesen eines Einzelsatzes
+    flight = flights[ 1 ].
+    flight = flights[ carrier_id = 'LH' connection_id = '0400'
+    flight_date = today ].
+
+    "Lesen mehrerer Datensätze
+    LOOP AT flights INTO flight WHERE flight_date >= today.
+      ...
+    EMDLOOP.
+
+    "Größe einer internen Tabelle
+    number_of_flights = lines( flights ).
+
+
+  "Fehlerbehandlung bei Tabellenausdrücken
+    "Fehlerbehandlung mit Try-Catch-Endtry
+    TRY.
+      flight = flights[ 1 ].
+    CATCH cx_sy_itab_line_not_found INTO DATA(x).
+      out->write( 'Line not Found' ).
+    ENDTRY.
+
+    "Fehlerbehandlung mit LINE_EXISTS
+      IF LINE_EXISTS( flights[ 1 ] ).
+        flight = flights[ 1 ].
+      ELSE.
+        out->write( 'Line not Found' ).
+      ENDIF.
+    
+  "Ändern von Datensätzen
+    "Ändern eines Einzelsatzes
+    flights[ 1 ]-price = '1000'.
+    "Ändern mehrerer Datensätze
+    LOOP AT flights REFERENCE INTO flight2.
+      flight2.->price = 1000.
+    ENDLOOP.
+
+  "Löschen von Datensätzen
+    "Löschen eines Einzelsatzes
+    DELETE flights INDEX 1.
+    DELETE TABLE flights FROM flight.
+
+    "Löschen mehrerer Datensätze
+    DELETE flights WHERE flight_date < today.
+
+  "Sortieren interner Tabellen
+    DATA flights TYPE Z119038_Flights.
+
+    SORT flights BY carrier_id ASCENDING connection_id
+    DESCENDING flight_date ASCENDING.
+
+  "Einspaltige Tabellen
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    CONSTANTS pi TYPE p LENGTH 16 DECIMALS 10 VALUE '3.14152960'.
+    CONSTANTS e TYPE p LENGTH 16 DECIMALS 2 VALUE '2.71'.
+
+
+
+    DATA numval1 TYPE p LENGTH 16 DECIMALS 2 VALUE '7'.
+    DATA numval2 TYPE p LENGTH 16 DECIMALS 2 VALUE '13'.
+
+
+    DATA result TYPE p LENGTH 16 DECIMALS 2.
+
+    result = abs( numval1 ).
+    out->write( |Absoluter Wert:| && result ).
+    result = ipow( base = 4 exp = 2 ).
+    out->write( |Potenz 4 hoch 2: | && result ).
+    result = nmax( val1 = numval1 val2 =  numval2 ).
+    out->write( | Maximum : | && result ).
+    result = cos( '6.2' ).
+    out->write( | cosinus von 6.2 | && result ).
+    result = round( val = pi dec = 4 ).
+    out->write( | pi gerundet | && result ).
+
+
+
+
+
+
+    DATA carrier_id TYPE c LENGTH 3.
+    DATA connection_id TYPE /dmo/connection_id.
+
+    out->write( | KarrierID: | && carrier_id && |adfhkjsf| ).
+    out->write( connection_id && |oh ha| ).
+
+
+
+
+    DATA connection1 TYPE /dmo/connection.
+
+    connection1-carrier_id = 'LH'.
+    connection1-connection_id = '0400'.
+
+    out->write( connection1-carrier_id ).
+    out->write( connection1-connection_id ).
+
+    out->write( connection1 ).
+
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+    DATA flight TYPE /dmo/flight.
+    DATA connection TYPE /dmo/connection.
+    DATA connection2 TYPE /dmo/connection.
+    DATA flight_xt TYPE z119038_flight_extended.
+
+    connection2 = connection.
+
+    flight_xt = CORRESPONDING #( flight ).
+    flight_xt = CORRESPONDING #( BASE ( flight_xt ) connection ).
+
+    DATA flightst TYPE TABLE OF /dmo/flight.
+   " DATA flight2 TYPE flightst.
+
+
+
+  """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+
+
+
+"Einfachverzweigungen
+    IF NOT ( flight_date >= '20210101' AND flight_date <= '20211231'  )
+        OR carrier_id = 'LH'.
+
+        "out->write( 'X' ).
+
+        ENDIF.
+
+
+
+    IF carrier_id IS NOT INITIAL.
+    out->write( '!!!YaY!!!' ).
+    ENDIF.
+
+
+    IF asdf IS INITIAL.
+    out->write( '!!!Oh No!!!' ).
+    ENDIF.
+
+    translate carrier_id  to upper case.
+
+"Mehrfachverzweigung
+    case carrier_id.
+      when 'LT'.
+      out->write( 'LT' ).
+      when 'LH'.
+      out->write( 'LH' ).
+      when others.
+      out->write( 'Na ja' ).
+
+    endcase.
+
+
+
+
+
+    """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+
+        "Attribute
+        DATA carrier_id TYPE /dmo/carrier_id VALUE 'LH'.
+        DATA flight_date TYPE /dmo/flight_date VALUE '20210104'.
+        DATA asdf TYPE /dmo/flight_date.
+
+        DATA result TYPE string.
+
+Zeichenkettenoperationen
+        """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+        "Länge einer Zeichenkette
+        result = strlen( flight_date ).
+        out->write( result ).
+
+        "Suchen innerhalb einer Zeichenkette
+        result = find( val = flight_date sub = '1' ).
+        out->write( result ).
+
+        "Ersetzen von Zeichen innerhalb einer Zeichenkette
+        result = replace( val = flight_date sub = '2' with = 'Hier stand eine zwei' occ = 0 ).
+        out->write( result ).
+
+        "To upper funktion
+        result = to_lower( carrier_id ).
+        out->write( result ).
+
+
+SELECT-Abfragen
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+data travels TYPE TABLE OF ZC_119038_TravelWithCustomer.
+
+ select from ZC_119038_TravelWithCustomer
+ FIELDS *
+ where CustomerId = '000001'
+ into table @travels.
+ if sy-subrc <> 0.
+   out->write( |Keine Daten gefunden| ).
+   RETURN.
+ endif.
+
+"Schleifenbehandlung
+ loop AT travels into data(travel).
+     out->write( |{ travel-BeginDate } - { travel-EndDate } - { travel-Description }    | ).
+ ENDLOOP.
+
+
+
+
+
+
+
+
+  ENDMETHOD.
+ENDCLASS.
