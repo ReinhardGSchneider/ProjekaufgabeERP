@@ -1,0 +1,28 @@
+@AbapCatalog.viewEnhancementCategory: [#NONE]
+@AccessControl.authorizationCheck: #CHECK
+@EndUserText.label: 'Basic View Connection'
+@Metadata.ignorePropagatedAnnotations: true
+@ObjectModel.usageType:{
+    serviceQuality: #X,
+    sizeCategory: #S,
+    dataClass: #MIXED
+}
+define view entity ZI_11900K_CONNECTION
+  as select from /dmo/connection
+{
+
+  key carrier_id      as CarrierId,
+  key connection_id   as ConnectionId,
+      airport_from_id as AirportFromId,
+      airport_to_id   as AirportToId,
+      departure_time  as DepartureTime,
+      arrival_time    as ArrivalTime,
+      @Semantics.quantity.unitOfMeasure: 'DistanceUnit'
+      unit_conversion(quantity => distance, 
+                        source_unit => distance_unit, 
+                        target_unit => cast('MI' as abap.unit ),
+                        error_handling => 'SET_TO_NULL')   as Distance,
+       
+      cast( 'MI' as abap.unit) as  DistanceUnit
+
+}

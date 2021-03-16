@@ -1,0 +1,28 @@
+@AbapCatalog.viewEnhancementCategory: [#NONE]
+@AccessControl.authorizationCheck: #CHECK
+@EndUserText.label: 'CompositeView Connection With Airports'
+@Metadata.ignorePropagatedAnnotations: false
+@ObjectModel.usageType:{
+    serviceQuality: #X,
+    sizeCategory: #S,
+    dataClass: #MIXED
+}
+define view entity ZI_11900K_ConnectionWithAirp
+  as select from ZI_11900K_CONNECTION as _Connections
+  association [1] to ZI_11900K_AIRPORT as _AirportFrom  on 
+  _Connections.AirportFromId = _AirportFrom.AirportId 
+  association [1] to ZI_11900K_AIRPORT as _AirportTo on 
+  _Connections.AirportToId = _AirportTo.AirportId
+{
+  key CarrierId,
+  key ConnectionId,
+      concat_with_space(AirportFromId, concat_with_space('-', AirportToId, 1), 1) 
+      as Description,
+      AirportFromId,
+      AirportToId,
+      DepartureTime,
+      ArrivalTime,
+      _AirportFrom,
+      _AirportTo
+}
+where Distance > 1000
