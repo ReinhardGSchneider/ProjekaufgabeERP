@@ -1,0 +1,98 @@
+CLASS zcl_11900k_connection DEFINITION
+  PUBLIC
+  FINAL
+  CREATE PUBLIC .
+
+  PUBLIC SECTION.
+
+    INTERFACES if_oo_adt_classrun .
+  PROTECTED SECTION.
+  PRIVATE SECTION.
+ENDCLASS.
+
+
+
+CLASS zcl_11900k_connection IMPLEMENTATION.
+
+
+  METHOD if_oo_adt_classrun~main.
+
+
+    DATA connections TYPE TABLE OF ZC_11900K_ConnectionWithAirp.
+    DATA connection TYPE ZC_11900K_ConnectionWithAirp.
+    DATA connection2 TYPE REF TO ZC_11900K_ConnectionWithAirp.
+    DATA airline TYPE /dmo/carrier_id VALUE 'LH'.
+
+    SELECT FROM ZC_11900K_ConnectionWithAirp
+      FIELDS *
+      WHERE CarrierId = @airline
+      INTO TABLE @connections.
+    IF sy-subrc <> 0.
+      out->write( |No Connections Found for | && airline ).
+      RETURN.
+    ENDIF.
+
+
+    IF sy-subrc = 0.
+      "Löschen der Datensätze nach 12 Uhr
+      DELETE connections WHERE DepartureTime > '120000' .
+
+      "Sortieren in absteigender Reihenfolge
+      SORT connections BY DepartureTime DESCENDING.
+
+      out->write( |Connections:  | ).
+      out->write( |Carrier Id & Connection Id, (From - To), Departure Time - Arrival Time | ).
+      LOOP AT connections INTO connection.
+
+        "Umschließen der Description mit runden Klammern
+        DATA  descriptionvar TYPE c LENGTH 20 .
+        descriptionvar =  | ( { connection-Description } ) | .
+        "out->write( descriptionvar ).
+
+        DATA(datumdeparture) = connection-DepartureTime.
+        "Datumsoperation der DepartureTime für Doppelpunkte
+        DATA datum1 TYPE c LENGTH 15.
+        datum1 = insert( val = datumdeparture sub = ':' off = 2 ).
+        datum1 = insert( val = datum1 sub = ':' off = 5 ).
+        "out->write( datum1 ).
+
+        "Datumsoperation der ArrivalTime für Doppelpunkte
+        DATA(datumarrival) = connection-ArrivalTime.
+        DATA datum2 TYPE c LENGTH 15.
+        datum2 = insert( val = datumarrival sub = ':' off = 2 ).
+        datum2 = insert( val = datum2 sub = ':' off = 5 ).
+        "out->write( datum2 ).
+
+
+
+        "Ausgabe der Liste
+        out->write( | { connection-CarrierId } { connection-ConnectionId } , { descriptionvar } , { datum1 } - { datum2 }   | ).
+
+      ENDLOOP.
+
+    ENDIF.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ENDMETHOD.
+ENDCLASS.
