@@ -18,54 +18,59 @@ CLASS zcl_11900k_connection IMPLEMENTATION.
   METHOD if_oo_adt_classrun~main.
 
 
-  DATA connections TYPE TABLE OF ZC_11900K_ConnectionWithAirp.
-  DATA connection TYPE ZC_11900K_ConnectionWithAirp.
-  DATA connection2 TYPE REF TO ZC_11900K_ConnectionWithAirp.
-  DATA airline TYPE /dmo/carrier_id VALUE 'LH'.
+    DATA connections TYPE TABLE OF ZC_11900K_ConnectionWithAirp.
+    DATA connection TYPE ZC_11900K_ConnectionWithAirp.
+    DATA connection2 TYPE REF TO ZC_11900K_ConnectionWithAirp.
+    DATA airline TYPE /dmo/carrier_id VALUE 'LH'.
 
-  SELECT FROM ZC_11900K_ConnectionWithAirp
-    FIELDS *
-    WHERE CarrierId = @airline
-    INTO TABLE @connections.
-  IF sy-subrc <> 0.
-    out->write( |No Connections Found for: | && airline ).
-    RETURN.
-  ENDIF.
-
-
-    DELETE connections WHERE DepartureTime > '120000' .
-
-    LOOP AT connections REFERENCE INTO connection2.
-        DATA  concats TYPE c LENGTH 100 .
-        concats =  | ( { connection2->Description } ) | .
-        connection2->Description = concats.
+    SELECT FROM ZC_11900K_ConnectionWithAirp
+      FIELDS *
+      WHERE CarrierId = @airline
+      INTO TABLE @connections.
+    IF sy-subrc <> 0.
+      out->write( |No Connections Found for | && airline ).
+      RETURN.
+    ENDIF.
 
 
+    IF sy-subrc = 0.
+      "Löschen der Datensätze nach 12 Uhr
+      DELETE connections WHERE DepartureTime > '120000' .
 
-    ENDLOOP.
+      "Sortieren in absteigender Reihenfolge
+      SORT connections BY DepartureTime DESCENDING.
 
-    out->write( |Carrier Id & Connection Id, (From - To), Departure Time - Arrival Time | ).
-  LOOP AT connections INTO connection.
+      out->write( |Connections:  | ).
+      out->write( |Carrier Id & Connection Id, (From - To), Departure Time - Arrival Time | ).
+      LOOP AT connections INTO connection.
 
-    DATA(datumdeparture) = connection2->DepartureTime.
+        "Umschließen der Description mit runden Klammern
+        DATA  descriptionvar TYPE c LENGTH 20 .
+        descriptionvar =  | ( { connection-Description } ) | .
+        "out->write( descriptionvar ).
+
+        DATA(datumdeparture) = connection-DepartureTime.
         "Datumsoperation der DepartureTime für Doppelpunkte
-        DATA datum1 TYPE c length 100.
+        DATA datum1 TYPE c LENGTH 15.
         datum1 = insert( val = datumdeparture sub = ':' off = 2 ).
         datum1 = insert( val = datum1 sub = ':' off = 5 ).
         "out->write( datum1 ).
 
         "Datumsoperation der ArrivalTime für Doppelpunkte
-        DATA(datumarrival) = connection2->ArrivalTime.
-        DATA datum2 TYPE c LENGTH 100.
-        datum1 = insert( val = datumarrival sub = ':' off = 2 ).
-        datum1 = insert( val = datum1 sub = ':' off = 5 ).
-        "out->write( datum1 ).
-
-    out->write( | { connection-CarrierId } { connection-ConnectionId } , { connection-Description } , { datum1 } - { datum2 }   | ).
-
-  ENDLOOP.
+        DATA(datumarrival) = connection-ArrivalTime.
+        DATA datum2 TYPE c LENGTH 15.
+        datum2 = insert( val = datumarrival sub = ':' off = 2 ).
+        datum2 = insert( val = datum2 sub = ':' off = 5 ).
+        "out->write( datum2 ).
 
 
+
+        "Ausgabe der Liste
+        out->write( | { connection-CarrierId } { connection-ConnectionId } , { descriptionvar } , { datum1 } - { datum2 }   | ).
+
+      ENDLOOP.
+
+    ENDIF.
 
 
 
