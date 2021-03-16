@@ -1,91 +1,97 @@
-@Metadata.layer: #CORE
+@Metadata.layer: #CUSTOMER
 @UI.headerInfo:{
     typeName: 'Connection',
     typeNamePlural: 'Connections'
 }
-annotate view ZC_11900K_ConnectionWithAirp
-    with 
+@UI.headerInfo.title.value: 'CarrierId'
+@UI.headerInfo.description.value: 'ConnectionId'
+annotate view ZC_11900K_ConnectionWithAirp with
 {
 
   @UI.facet: [{ type: #IDENTIFICATION_REFERENCE, label: 'General Information' }]
   @UI:{
-      selectionField:  [{ position: 10 }],
-      lineItem: [{ position: 10 }],
+      lineItem: [{ position: 10, label: 'Carrier Id' }],
       identification: [{ position: 10 }]
   }
+  @EndUserText.quickInfo: 'Carrier ID'
+  @EndUserText.label: 'Carrier Id'
   CarrierId;
   @UI:{
-     selectionField:  [{ position: 20 }],
-     lineItem: [{ position: 20 }],
+     lineItem: [{ position: 20 , label: 'Connection Id'}],
      identification: [{ position: 20 }]
   }
+  @EndUserText.quickInfo: 'Connection ID'
+  @EndUserText.label: 'Connection Id'
   ConnectionId;
 
   @UI:{
-      selectionField:  [{ position: 30 }],
-      lineItem: [{ position: 30 }],
+      lineItem: [{ position: 30 , label: 'Description'}],
       identification: [{ position: 30 }]
   }
-  @Search.defaultSearchElement: true
-  @Search.fuzzinessThreshold: 0.7
+  @EndUserText.quickInfo: 'Description'
+  @EndUserText.label: 'Description'
   Description;
 
   @UI:{
-      selectionField:  [{ position: 40 }],
-      lineItem: [{ position: 40 }],
-      identification: [{ position: 40 }]
-  }
-  AirportFromName;
-  @UI:{
-      selectionField:  [{ position: 50 }],
-      lineItem: [{ position: 50 }],
       identification: [{ position: 50 }]
   }
-  AirportFromCity;
+  @EndUserText.quickInfo: 'Airport From Name'
+  @EndUserText.label: 'Airport From Name'
+  AirportFromName;
   @UI:{
-      selectionField:  [{ position: 60 }],
-      lineItem: [{ position: 60 }],
       identification: [{ position: 60 }]
   }
+  @EndUserText.quickInfo: 'Airport From City'
+  @EndUserText.label: 'Airport From City'
+  AirportFromCity;
+  @UI:{
+      identification: [{ position: 70 }]
+  }
+  @EndUserText.quickInfo: 'Airport From Country'
+  @EndUserText.label: 'Airport From Country'
   AirportFromCountry;
   @UI:{
-      selectionField:  [{ position: 70 }],
-      lineItem: [{ position: 70 }],
-      identification: [{ position: 70 }]      
+  selectionField:  [{ position: 10 }],
+      lineItem: [{ position: 40 }],
+      identification: [{ position: 30 }]
   }
+  @EndUserText.quickInfo: 'Airport From Name'
+  @EndUserText.label: 'Departure Time'
   DepartureTime;
   @UI:{
-      selectionField:  [{ position: 80 }],
-      lineItem: [{ position: 80 }],
       identification: [{ position: 80 }]
   }
+  @EndUserText.quickInfo: 'Airport To Name'
+  @EndUserText.label: 'Airport To Name'
   AirportToName;
   @UI:{
-      selectionField:  [{ position: 90 }],
-      lineItem: [{ position: 90 }],
       identification: [{ position: 90 }]
   }
+  @EndUserText.quickInfo: 'Airport To City'
+  @EndUserText.label: 'Airport To City'
   AirportToCity;
-  @UI:{
-      selectionField:  [{ position: 100 }],
-      lineItem: [{ position: 100 }],
+  @UI:{ 
       identification: [{ position: 100 }]
   }
+  @EndUserText.quickInfo: 'Airport To Country'
+  @EndUserText.label: 'Airport To Country'
   AirportToCountry;
   @UI:{
-      selectionField:  [{ position: 110 }],
-      lineItem: [{ position: 110 }],
-      identification: [{ position: 110 }]
+      selectionField:  [{ position: 20 }],
+      lineItem: [{ position: 50 }],
+      identification: [{ position: 40 }]
   }
-  ArrivalTime;   
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+  @EndUserText.quickInfo: 'Arrival Time'
+  @EndUserText.label: 'Arrival Time'
+  ArrivalTime;
+
+
+
+
+
+
+
+
+
+
 }
