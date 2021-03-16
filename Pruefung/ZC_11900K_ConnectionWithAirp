@@ -2,16 +2,20 @@
 @AccessControl.authorizationCheck: #CHECK
 @EndUserText.label: 'ConsumptionView Connection With Airports'
 @Metadata.ignorePropagatedAnnotations: true
+@Metadata.allowExtensions: true
 @ObjectModel.usageType:{
     serviceQuality: #X,
     sizeCategory: #S,
     dataClass: #MIXED
 }
+@Search.searchable: true
 define view entity ZC_11900K_ConnectionWithAirp
   as select from ZI_11900K_ConnectionWithAirp
 {
   key CarrierId,
   key ConnectionId,
+      @Search.defaultSearchElement: true
+      @Search.fuzzinessThreshold: 0.7
       Description,
       _AirportFrom.Name as AirportFromName,
       _AirportFrom.City as AirportFromCity,
