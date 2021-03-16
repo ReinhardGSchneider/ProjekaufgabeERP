@@ -1,0 +1,93 @@
+CLASS zcl_11900k_connection DEFINITION
+  PUBLIC
+  FINAL
+  CREATE PUBLIC .
+
+  PUBLIC SECTION.
+
+    INTERFACES if_oo_adt_classrun .
+  PROTECTED SECTION.
+  PRIVATE SECTION.
+ENDCLASS.
+
+
+
+CLASS zcl_11900k_connection IMPLEMENTATION.
+
+
+  METHOD if_oo_adt_classrun~main.
+
+
+  DATA connections TYPE TABLE OF ZC_11900K_ConnectionWithAirp.
+  DATA connection TYPE ZC_11900K_ConnectionWithAirp.
+  DATA connection2 TYPE REF TO ZC_11900K_ConnectionWithAirp.
+  DATA airline TYPE /dmo/carrier_id VALUE 'LH'.
+
+  SELECT FROM ZC_11900K_ConnectionWithAirp
+    FIELDS *
+    WHERE CarrierId = @airline
+    INTO TABLE @connections.
+  IF sy-subrc <> 0.
+    out->write( |No Connections Found for: | && airline ).
+    RETURN.
+  ENDIF.
+
+
+    DELETE connections WHERE DepartureTime > '120000' .
+
+    LOOP AT connections REFERENCE INTO connection2.
+        DATA  concats TYPE c LENGTH 100 .
+        concats =  | ( { connection2->Description } ) | .
+        connection2->Description = concats.
+
+
+
+    ENDLOOP.
+
+    out->write( |Carrier Id & Connection Id, (From - To), Departure Time - Arrival Time | ).
+  LOOP AT connections INTO connection.
+
+    DATA(datumdeparture) = connection2->DepartureTime.
+        "Datumsoperation der DepartureTime für Doppelpunkte
+        DATA datum1 TYPE c length 100.
+        datum1 = insert( val = datumdeparture sub = ':' off = 2 ).
+        datum1 = insert( val = datum1 sub = ':' off = 5 ).
+        "out->write( datum1 ).
+
+        "Datumsoperation der ArrivalTime für Doppelpunkte
+        DATA(datumarrival) = connection2->ArrivalTime.
+        DATA datum2 TYPE c LENGTH 100.
+        datum1 = insert( val = datumarrival sub = ':' off = 2 ).
+        datum1 = insert( val = datum1 sub = ':' off = 5 ).
+        "out->write( datum1 ).
+
+    out->write( | { connection-CarrierId } { connection-ConnectionId } , { connection-Description } , { datum1 } - { datum2 }   | ).
+
+  ENDLOOP.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ENDMETHOD.
+ENDCLASS.
